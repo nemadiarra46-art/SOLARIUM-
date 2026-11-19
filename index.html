@@ -1,258 +1,543 @@
 
-
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>SOLARIUM - Dimensionnement professionnel</title>
+<meta name="theme-color" content="#0b1120">
+<title>SOULPRO MALI Ingénierie — Bureau d'études photovoltaïque</title>
 <style>
-*{box-sizing:border-box}
-body{margin:0;background:#0b1120;color:#f1f5f9;font-family:Arial,sans-serif}
-header{background:#123b2a;padding:24px;border-bottom:4px solid #f59e0b}
-header h1{color:#fbbf24;margin:0;font-size:30px}
-header p{margin-bottom:0}
-main{max-width:850px;margin:auto;padding:18px}
-.card{background:#172033;border:1px solid #334155;border-radius:15px;padding:20px;margin-bottom:20px}
-h2{color:#fbbf24}
-label{display:block;margin-top:15px;color:#cbd5e1;font-size:14px}
-input,select{width:100%;padding:14px;margin-top:7px;background:#0f172a;color:white;border:1px solid #475569;border-radius:9px;font-size:16px}
-button{width:100%;padding:16px;margin-top:22px;background:#f59e0b;color:#111827;border:0;border-radius:10px;font-weight:bold;font-size:17px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:12px}
-.result{background:#0f172a;padding:16px;border-left:4px solid #f59e0b;border-radius:9px}
-.result small{color:#94a3b8}
-.result strong{display:block;color:#fbbf24;font-size:21px;margin-top:8px;overflow-wrap:anywhere}
-#results{display:none}
-.warning{background:#422006;color:#fde68a;padding:14px;border-radius:9px;margin-top:15px;line-height:1.5}
-.info{background:#123b2a;color:#bbf7d0;padding:14px;border-radius:9px;margin-top:15px;line-height:1.5}
-footer{text-align:center;color:#94a3b8;padding:25px}
+:root{--bg:#0b1120;--panel:#172033;--panel2:#0f172a;--line:#334155;--muted:#9aa9bd;--text:#f1f5f9;--gold:#fbbf24;--green:#14532d;--orange:#f59e0b;--red:#7f1d1d}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px Arial,sans-serif;line-height:1.5}
+header{background:linear-gradient(120deg,#123b2a,#0f2d28);padding:22px 18px;border-bottom:4px solid var(--orange)}
+header h1{margin:0;color:var(--gold);font-size:30px}header p{margin:5px 0 0;color:#e2e8f0}
+nav{display:flex;gap:8px;overflow:auto;padding:12px 16px;background:#101827;position:sticky;top:0;z-index:5;border-bottom:1px solid var(--line)}
+nav a{white-space:nowrap;text-decoration:none;color:#dbeafe;background:#1e293b;padding:9px 13px;border-radius:8px;font-size:13px}
+main{max-width:1100px;margin:auto;padding:16px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:15px;padding:18px;margin:0 0 18px}
+h2{margin:0 0 14px;color:var(--gold);font-size:21px}h3{color:#fde68a;margin:18px 0 8px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}
+.field label{display:block;color:#cbd5e1;font-size:13px;margin:10px 0 5px}
+input,select,textarea{width:100%;padding:12px;background:var(--panel2);color:white;border:1px solid #475569;border-radius:8px;font-size:15px;min-height:44px}
+input:focus,select:focus,textarea:focus{outline:2px solid #f59e0b;border-color:#f59e0b}
+small.hint{display:block;color:var(--muted);font-size:11px;margin-top:4px}
+button{border:0;border-radius:9px;padding:13px 16px;font-weight:bold;font-size:14px;cursor:pointer}
+.primary{background:var(--orange);color:#111827}.secondary{background:#334155;color:white}.success{background:#166534;color:white}
+.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}.actions button{flex:1;min-width:150px}
+.result{background:var(--panel2);padding:14px;border-left:4px solid var(--orange);border-radius:9px;min-width:0}
+.result small{display:block;color:var(--muted)}.result strong{display:block;color:var(--gold);font-size:20px;margin-top:6px;overflow-wrap:anywhere}
+.notice{padding:13px;border-radius:9px;margin-top:12px;line-height:1.5;background:#422006;color:#fde68a}
+.ok{background:#123b2a;color:#bbf7d0}.bad{background:#451a1a;color:#fecaca}
+.muted{color:var(--muted)}.hidden{display:none!important}
+table{width:100%;border-collapse:collapse;margin-top:10px;font-size:13px}th,td{padding:9px;border-bottom:1px solid var(--line);text-align:left}th{color:#fde68a}
+.diagram{background:#0b1324;border:1px dashed #64748b;padding:14px;border-radius:10px;white-space:pre-wrap;font-family:monospace;font-size:12px;overflow-wrap:anywhere}
+td input{min-width:78px;padding:8px;font-size:13px}td .item-name{min-width:150px}#detailedReport{background:#fff;color:#172033;border:1px solid #cbd5e1;padding:18px}#detailedReport h3{color:#7a4b00}#detailedReport table{color:#172033}#detailedReport th{color:#7a4b00}footer{text-align:center;color:var(--muted);padding:25px}
+@media(min-width:700px){main{padding:24px}.card{padding:22px}}
+@media print{body{background:white;color:#111}header,nav,.no-print,button{display:none!important}main{max-width:none;padding:0}.card{background:white;color:#111;border:1px solid #bbb;break-inside:avoid}.result{background:#f4f4f4}.result strong,h2,h3,th{color:#7a4b00}.result small,.muted{color:#444}.notice,.ok,.bad{background:#eee;color:#111}input,select{border:0;color:#111;background:white;padding:0}.diagram{color:#111;background:#fff}}
 </style>
 </head>
 <body>
-
 <header>
-<h1>☀️ SOLARIUM</h1>
-<p>Logiciel professionnel de dimensionnement photovoltaïque</p>
+<h1>☀️ SOULPRO MALI <span style="color:#f1f5f9;font-size:.62em">INGÉNIERIE</span></h1>
+<p>Plateforme de pré-dimensionnement et d'étude photovoltaïque</p>
 </header>
-
+<nav class="no-print">
+<a href="#projet">Projet</a><a href="#stockage">Stockage</a><a href="#equipements">Équipements</a><a href="#electrique">Câbles & protections</a><a href="#resultats">Résultats</a><a href="#bilan">Bilan de puissance</a><a href="#devis">Devis</a><a href="#rapport">Rapport détaillé</a>
+</nav>
 <main>
-
-<section class="card">
-<h2>📋 1. Données énergétiques</h2>
-
-<label>Consommation quotidienne (kWh/jour)</label>
-<input id="energy" type="text" inputmode="decimal" value="10">
-
-<label>Puissance maximale des charges (W)</label>
-<input id="load" type="text" inputmode="decimal" value="3000">
-
-<label>Autonomie souhaitée (jours)</label>
-<input id="days" type="text" inputmode="decimal" value="1">
-
-<label>Heures solaires équivalentes (HSP)</label>
-<input id="hsp" type="text" inputmode="decimal" value="5.5">
-
-<label>Puissance d'un panneau solaire (Wc)</label>
-<input id="panel" type="text" inputmode="decimal" value="580">
-
-<h2>🔋 2. Stockage</h2>
-
-<label>Tension du système batterie</label>
-<select id="voltage">
-<option value="12">12 V</option>
-<option value="24">24 V</option>
-<option value="48" selected>48 V</option>
-</select>
-
-<label>Technologie batterie</label>
-<select id="dod">
-<option value="0.5">Gel / plomb (50%)</option>
-<option value="0.8" selected>Lithium (80%)</option>
-<option value="0.9">Lithium (90%)</option>
-</select>
-
-<h2>⚙️ 3. Paramètres de conversion</h2>
-
-<label>Rendement global photovoltaïque (%)</label>
-<input id="eff" type="text" inputmode="decimal" value="80">
-
-<label>Rendement de l'onduleur (%)</label>
-<input id="invEff" type="text" inputmode="decimal" value="92">
-
-<label>Facteur de puissance des charges (cos φ)</label>
-<input id="pf" type="text" inputmode="decimal" value="0.9">
-
-<label>Marge de sécurité de l'onduleur (%)</label>
-<input id="margin" type="text" inputmode="decimal" value="25">
-
-<button onclick="calculate()">⚡ CALCULER LE DIMENSIONNEMENT</button>
-</section>
-
-<section class="card" id="results">
-<h2>📊 4. Résultats du dimensionnement</h2>
-
+<section class="card" id="projet">
+<h2>1. Identification et données énergétiques</h2>
 <div class="grid">
-<div class="result">
-<small>Puissance PV installée</small>
-<strong id="pv">-</strong>
-</div>
-
-<div class="result">
-<small>Nombre de panneaux</small>
-<strong id="np">-</strong>
-</div>
-
-<div class="result">
-<small>Capacité nominale batterie</small>
-<strong id="bk">-</strong>
-</div>
-
-<div class="result">
-<small>Capacité batterie</small>
-<strong id="ba">-</strong>
-</div>
-
-<div class="result">
-<small>Puissance onduleur indicative</small>
-<strong id="iv">-</strong>
-</div>
-
-<div class="result">
-<small>Courant DC batterie</small>
-<strong id="dc">-</strong>
-</div>
-
-<div class="result">
-<small>Courant AC monophasé à 230 V</small>
-<strong id="ac">-</strong>
-</div>
-
-<div class="result">
-<small>Production solaire théorique</small>
-<strong id="prod">-</strong>
-</div>
-</div>
-
-<div id="alerts"></div>
-
-<div class="info">
-<strong>Note technique :</strong> ce calculateur réalise un pré-dimensionnement.
-Les sections de câbles, les protections, les tensions MPPT, les courants de court-circuit et les configurations série/parallèle doivent être vérifiés avec les fiches techniques des équipements.
+<div class="field"><label>Nom du projet / client</label><input id="project" value="Étude photovoltaïque"></div>
+<div class="field"><label>Localité / site</label><input id="site" value="Mali"></div>
+<div class="field"><label>Technicien / bureau d'études</label><input id="engineer" placeholder="Nom du technicien"></div>
+<div class="field"><label>Date de l'étude</label><input id="studyDate" type="date"></div>
+<div class="field"><label>Consommation journalière (kWh/j)</label><input id="energy" type="number" min="0.01" step="any" value="10"></div>
+<div class="field"><label>Puissance maximale simultanée (W)</label><input id="load" type="number" min="1" step="any" value="3000"></div>
+<div class="field"><label>Autonomie souhaitée (jours)</label><input id="days" type="number" min="0" max="10" step="0.5" value="1"><small class="hint">Valeur de 0 à 10 jours. 0 = sans stockage d'autonomie.</small></div>
+<div class="field"><label>Heures solaires équivalentes (HSP)</label><input id="hsp" type="number" min="0.1" step="any" value="5.5"></div>
+<div class="field"><label>Puissance d'un panneau (Wc)</label><input id="panel" type="number" min="1" step="any" value="580"></div>
+<div class="field"><label>Marge de sécurité PV (%)</label><input id="pvMargin" type="number" min="0" max="100" step="any" value="15"></div>
+<div class="field"><label>Performance globale PV (%)</label><input id="pvEff" type="number" min="1" max="100" step="any" value="80"></div>
+<div class="field"><label>Rendement batterie (%)</label><input id="batEff" type="number" min="1" max="100" step="any" value="95"></div>
 </div>
 </section>
 
+<section class="card" id="stockage">
+<h2>2. Stockage et conversion</h2>
+<div class="grid">
+<div class="field"><label>Tension nominale batterie</label><select id="voltage"><option>12</option><option>24</option><option selected>48</option></select></div>
+<div class="field"><label>Technologie / profondeur de décharge</label><select id="dod"><option value="0.5">Plomb / GEL — 50 %</option><option value="0.8" selected>Lithium — 80 %</option><option value="0.9">Lithium — 90 % (selon fabricant)</option></select></div>
+<div class="field"><label>Rendement de l'onduleur (%)</label><input id="invEff" type="number" min="1" max="100" value="92"></div>
+<div class="field"><label>Facteur de puissance (cos φ)</label><input id="pf" type="number" min="0.1" max="1" step="0.01" value="0.9"></div>
+
+<div class="field"><label>Marge de dimensionnement onduleur (%)</label><input id="invMargin" type="number" min="0" max="100" value="25"></div>
+<div class="field"><label>Réseau de sortie</label><select id="phase"><option value="1">Monophasé</option><option value="3">Triphasé</option></select></div>
+<div class="field"><label>Tension AC (V)</label><input id="acVoltage" type="number" value="230" min="1"></div>
+</div>
+</section>
+
+<section class="card" id="equipements">
+<h2>3. Caractéristiques des panneaux et de l'onduleur</h2>
+<p class="muted">Renseigner les valeurs des fiches techniques pour contrôler les chaînes PV. Les champs facultatifs laissés à zéro ne seront pas vérifiés.</p>
+<div class="grid">
+<div class="field"><label>Panneau — Voc (V)</label><input id="voc" type="number" step="any" value="51.5"></div>
+<div class="field"><label>Panneau — Vmp (V)</label><input id="vmp" type="number" step="any" value="43.5"></div>
+<div class="field"><label>Panneau — Isc (A)</label><input id="isc" type="number" step="any" value="14.2"></div>
+<div class="field"><label>Panneau — Imp (A)</label><input id="imp" type="number" step="any" value="13.34"></div>
+<div class="field"><label>Coefficient température Voc (%/°C, négatif)</label><input id="vocCoeff" type="number" step="any" value="-0.28"></div>
+<div class="field"><label>Température minimale de calcul (°C)</label><input id="minTemp" type="number" value="5"></div>
+<div class="field"><label>Onduleur — tension PV maximale (V)</label><input id="maxPV" type="number" value="500"></div>
+<div class="field"><label>Plage MPPT minimale (V)</label><input id="mpptMin" type="number" value="120"></div>
+<div class="field"><label>Plage MPPT maximale (V)</label><input id="mpptMax" type="number" value="450"></div>
+<div class="field"><label>Nombre de MPPT</label><input id="mpptCount" type="number" min="1" value="2"></div>
+<div class="field"><label>Courant maximal par MPPT (A)</label><input id="mpptCurrent" type="number" step="any" value="26"></div>
+</div>
+<div class="notice">Attention : les valeurs d'exemple sont indicatives. Remplacez-les par les données exactes du module et de l'onduleur retenus avant toute validation de conception.</div>
+</section>
+
+<section class="card" id="electrique">
+<h2>4. Pré-dimensionnement des câbles et protections</h2>
+<div class="grid">
+<div class="field"><label>Longueur aller champ PV → onduleur (m)</label><input id="pvLength" type="number" min="0" value="20"></div>
+<div class="field"><label>Chute de tension PV cible (%)</label><input id="pvDrop" type="number" min="0.1" max="5" step="0.1" value="1.5"></div>
+<div class="field"><label>Longueur aller batterie → onduleur (m)</label><input id="batLength" type="number" min="0" value="2"></div>
+<div class="field"><label>Chute de tension batterie cible (%)</label><input id="batDrop" type="number" min="0.1" max="3" step="0.1" value="1"></div>
+<div class="field"><label>Longueur aller onduleur → tableau AC (m)</label><input id="acLength" type="number" min="0" value="15"></div>
+<div class="field"><label>Chute de tension AC cible (%)</label><input id="acDrop" type="number" min="0.1" max="5" step="0.1" value="2"></div>
+<div class="field"><label>Conducteur</label><select id="metal"><option value="0.0175">Cuivre</option><option value="0.0282">Aluminium</option></select></div>
+</div>
+<p class="muted">Le calcul de section ci-dessous est basé sur la chute de tension uniquement. Il ne remplace pas la vérification thermique, le mode de pose, le regroupement, la température ambiante, les protections ni les normes applicables.</p>
+</section>
+
+<section class="card no-print">
+<h2>5. Calcul et génération du rapport</h2>
+<div class="actions"><button class="primary" onclick="calculate()">⚡ CALCULER LE DIMENSIONNEMENT</button><button class="secondary" onclick="window.print()">🖨️ Imprimer / Enregistrer en PDF</button><button class="secondary" onclick="resetForm()">Réinitialiser</button></div>
+<div id="formErrors" class="notice hidden"></div>
+</section>
+
+<section class="card" id="bilan">
+<h2>5. Bilan détaillé des puissances</h2>
+<p class="muted">Saisissez les récepteurs du site. La puissance installée, la puissance appelée estimée et l'énergie journalière sont calculées à partir des quantités, puissances unitaires, coefficients de simultanéité et durées d'utilisation.</p>
+<div class="actions no-print"><button class="secondary" onclick="addLoadRow()">+ Ajouter un équipement</button><button class="success" onclick="calculatePowerBalance()">Calculer le bilan</button><button class="secondary" onclick="applyPowerBalance()">Reprendre le bilan dans le dimensionnement</button></div>
+<div style="overflow-x:auto"><table id="loadTable"><thead><tr><th>Équipement</th><th>Qté</th><th>W/unité</th><th>Simultanéité %</th><th>h/j</th><th>Puissance installée</th><th>Puissance appelée</th><th>Énergie/j</th><th class="no-print">Action</th></tr></thead><tbody id="loadRows"></tbody></table></div>
+<div class="grid" style="margin-top:14px">
+<div class="result"><small>Puissance totale installée</small><strong id="balInstalled">—</strong></div>
+<div class="result"><small>Puissance appelée estimée</small><strong id="balDemand">—</strong></div>
+<div class="result"><small>Énergie journalière totale</small><strong id="balEnergy">—</strong></div>
+<div class="result"><small>Énergie mensuelle estimée</small><strong id="balMonth">—</strong></div>
+</div>
+<div id="balanceNote" class="notice">Ajoutez les équipements puis calculez le bilan. Les coefficients de simultanéité doivent être adaptés aux usages réels.</div>
+</section>
+
+<section class="card hidden" id="resultats">
+<h2>6. Résultats du dimensionnement</h2>
+<div class="grid">
+<div class="result"><small>Puissance PV requise</small><strong id="rPvReq">—</strong></div>
+<div class="result"><small>Puissance PV installée</small><strong id="rPv">—</strong></div>
+<div class="result"><small>Nombre de panneaux</small><strong id="rPanels">—</strong></div>
+<div class="result"><small>Stockage nominal requis</small><strong id="rBatKwh">—</strong></div>
+<div class="result"><small>Capacité batterie équivalente</small><strong id="rBatAh">—</strong></div>
+<div class="result"><small>Puissance onduleur indicative</small><strong id="rInv">—</strong></div>
+<div class="result"><small>Courant DC batterie en pointe</small><strong id="rDc">—</strong></div>
+<div class="result"><small>Courant AC calculé</small><strong id="rAc">—</strong></div>
+<div class="result"><small>Production PV estimée</small><strong id="rProd">—</strong></div>
+<div class="result"><small>Chaînes PV proposées</small><strong id="rStrings">—</strong></div>
+<div class="result"><small>Câble PV calculé</small><strong id="rPvCable">—</strong></div>
+<div class="result"><small>Câble batterie calculé</small><strong id="rBatCable">—</strong></div>
+<div class="result"><small>Câble AC calculé</small><strong id="rAcCable">—</strong></div>
+</div>
+<div id="resultAlerts"></div>
+<h3>Contrôle des chaînes photovoltaïques</h3>
+<div id="stringDetails" class="diagram">Lancez le calcul pour afficher la proposition.</div>
+<h3>Synoptique fonctionnel indicatif</h3>
+<div id="diagram" class="diagram">Champ PV → protections DC → onduleur hybride ↔ batterie → protections AC → tableau des charges</div>
+<h3>Résumé de l'étude</h3>
+<div id="reportSummary" class="muted"></div>
+</section>
+
+<section class="card" id="schemas">
+<h2>7. Schémas électriques</h2>
+<p class="muted">Génération de schémas de principe à partir des données du pré-dimensionnement. Les symboles et calibres doivent être validés avec les fiches techniques et les normes applicables.</p>
+<div class="actions no-print">
+<button class="primary" onclick="drawDiagram('single')">Afficher le schéma unifilaire</button>
+<button class="secondary" onclick="drawDiagram('wiring')">Afficher le schéma de câblage</button>
+<button class="secondary" onclick="window.print()">Imprimer le schéma / PDF</button>
+</div>
+<div id="schemaStatus" class="notice">Effectuez d'abord un dimensionnement, puis choisissez le type de schéma.</div>
+<div id="schemaCanvas" class="diagram" style="margin-top:14px;white-space:normal;overflow:auto">
+<div class="muted">Le schéma apparaîtra ici après le calcul et la sélection du type.</div>
+</div>
+</section>
+
+<section class="card" id="catalogue-prix">
+<h2>Catalogue de prix indicatifs — Bamako</h2>
+<p class="muted">Prix budgétaires indicatifs en FCFA, réduits de 20 % par rapport à la grille de référence précédente. Modifiables avant chaque devis. Les références et qualités doivent être comparées avant achat.</p>
+<div class="notice">Base indicative consultée en novembre 2026. Les prix affichés en ligne et les mercuriales ne sont pas toujours comparables (marques, garanties, livraison, taxes et caractéristiques différentes).</div>
+<div style="overflow-x:auto">
+<table>
+<thead><tr><th>Équipement / référence de base</th><th>Prix indicatif moyen</th><th>Unité</th><th>Observation</th></tr></thead>
+<tbody id="priceCatalogRows"></tbody>
+</table>
+</div>
+<div class="actions no-print">
+<button class="secondary" onclick="resetMarketPrices()">Réinitialiser les prix indicatifs</button>
+<button class="secondary" onclick="buildQuoteLines()">Utiliser les prix dans le devis</button>
+</div>
+<p class="muted"><small>Sources de repères : mercuriale Bamako 2026 (panneaux 580 W), boutiques maliennes en ligne (Sahel Tech Solutions, Zhooma, Africia Tech) et annonces locales. Les prix non publiés de manière suffisamment comparable sont signalés comme estimations de budget.</small></p>
+</section>
+
+<section class="card" id="devis">
+<h2>8. Établissement du devis estimatif</h2>
+<p class="muted">Les quantités de base sont proposées depuis le dimensionnement. Vous pouvez modifier les désignations, quantités et prix unitaires avant de générer le devis en FCFA.</p>
+<div class="grid no-print">
+<div class="field"><label>Client</label><input id="quoteClient" placeholder="Nom du client"></div>
+<div class="field"><label>Lieu d'exécution</label><input id="quoteSite" placeholder="Localité / site"></div>
+<div class="field"><label>Validité du devis (jours)</label><input id="quoteValidity" type="number" min="1" value="15"></div>
+<div class="field"><label>Délai d'exécution (jours)</label><input id="quoteDelay" type="number" min="1" value="7"></div>
+<div class="field"><label>Transport / logistique (FCFA)</label><input id="quoteTransport" type="number" min="0" value="0"></div>
+<div class="field"><label>Remise (FCFA)</label><input id="quoteDiscount" type="number" min="0" value="0"></div>
+</div>
+<div class="actions no-print">
+<button class="secondary" onclick="buildQuoteLines()">Préparer les lignes du devis depuis l'étude</button>
+<button class="secondary" onclick="addQuoteRow()">+ Ajouter une ligne</button>
+<button class="success" onclick="makeQuote()">Calculer le devis</button>
+<button class="primary" onclick="printQuote()">Imprimer / PDF</button>
+</div>
+<div style="overflow-x:auto">
+<table id="quoteTable">
+<thead><tr><th>Désignation</th><th>Unité</th><th>Quantité</th><th>Prix unitaire (FCFA)</th><th>Montant (FCFA)</th><th class="no-print">Action</th></tr></thead>
+<tbody id="quoteRows"></tbody>
+</table>
+</div>
+<div id="quoteResult" class="notice ok">Préparez les lignes depuis l'étude ou ajoutez vos propres articles, puis saisissez les prix unitaires.</div>
+</section>
+
+<section class="card" id="rapport">
+<h2>9. Rapport de synthèse technique détaillé</h2>
+<p class="muted">Le rapport reprend les données du projet, le bilan de puissance, les résultats de pré-dimensionnement, les contrôles PV, les câbles estimatifs et les réserves techniques.</p>
+
+<div class="grid no-print">
+<div class="field"><label>Maître d'ouvrage / client</label><input id="clientName" placeholder="Nom du client"></div>
+<div class="field"><label>Adresse / téléphone</label><input id="clientContact" placeholder="Coordonnées du client"></div>
+<div class="field"><label>Objet de l'étude</label><input id="reportObject" value="Étude de dimensionnement d'un système photovoltaïque hybride"></div>
+<div class="field"><label>Référence du rapport</label><input id="reportRef" value="SMI-ETUDE-001"></div>
+</div>
+<div class="actions no-print"><button class="primary" onclick="generateDetailedReport()">Générer le rapport détaillé</button><button class="success" onclick="printReport()">Imprimer / enregistrer en PDF</button></div>
+<div id="detailedReport" class="notice">Cliquez sur « Générer le rapport détaillé » après avoir effectué le dimensionnement et, si possible, le bilan de puissance.</div>
+</section>
+
+<footer>SOULPRO MALI Ingénierie © 2026 | Études et ingénierie photovoltaïque — Outil de pré-dimensionnement</footer>
 </main>
-
-<footer>
-SOLARIUM © 2026 | Ingénierie solaire
-</footer>
-
 <script>
-function val(id){
-return Number(document.getElementById(id).value.trim().replace(",","."));
+const $=id=>document.getElementById(id);
+const num=id=>Number(String($(id).value).trim().replace(',','.'));
+const fmt=(x,d=2)=>Number(x).toLocaleString('fr-FR',{minimumFractionDigits:d,maximumFractionDigits:d});
+const standardSections=[1.5,2.5,4,6,10,16,25,35,50,70,95,120,150,185,240];
+function setText(id,text){$(id).textContent=text}
+function cableSection(I,L,V,dropPct,rho,phase=1){
+ if(!I||!L||!V||!dropPct)return null;
+ const dV=V*dropPct/100;
+ const factor=phase===3?Math.sqrt(3):2;
+ const raw=(factor*rho*L*I)/dV;
+ const chosen=standardSections.find(s=>s>=raw)||null;
+ return {raw,chosen};
 }
-
 function calculate(){
+ const ids=['energy','load','days','hsp','panel','pvMargin','pvEff','batEff','voltage','invEff','pf','invMargin','acVoltage','voc','vmp','isc','imp','vocCoeff','minTemp','maxPV','mpptMin','mpptMax','mpptCount','mpptCurrent','pvLength','pvDrop','batLength','batDrop','acLength','acDrop','metal'];
+ const v={}; ids.forEach(id=>v[id]=num(id));
+ const errors=[];
+ ['energy','load','hsp','panel','pvEff','batEff','invEff','pf','acVoltage'].forEach(id=>{if(!Number.isFinite(v[id])||v[id]<=0)errors.push('La valeur « '+id+' » doit être supérieure à zéro.')});
+ if(v.days<0||v.days>10)errors.push('L’autonomie doit être comprise entre 0 et 10 jours.');
+ ['pvEff','batEff','invEff'].forEach(id=>{if(v[id]>100)errors.push(id+' ne peut pas dépasser 100 %.')});
+ if(v.pf>1)errors.push('Le facteur de puissance doit être inférieur ou égal à 1.');
+ if(v.pvMargin<0||v.invMargin<0)errors.push('Les marges ne peuvent pas être négatives.');
+ if(v.pvDrop<=0||v.batDrop<=0||v.acDrop<=0)errors.push('Les chutes de tension doivent être positives.');
+ if(errors.length){$('formErrors').classList.remove('hidden');$('formErrors').innerHTML=errors.join('<br>');return}
+ $('formErrors').classList.add('hidden');
+ const pvEff=v.pvEff/100, batEff=v.batEff/100, invEff=v.invEff/100, dod=num('dod'), V=v.voltage;
+ const pvRequired=v.energy/(v.hsp*pvEff)*(1+v.pvMargin/100);
+ const nPanels=Math.ceil(pvRequired*1000/v.panel);
+ const pvInstalled=nPanels*v.panel/1000;
+ const batteryKwh=v.days===0?0:(v.energy*v.days)/(dod*invEff*batEff);
+ const batteryAh=batteryKwh*1000/V;
+ const inverterKva=(v.load/(1000*v.pf))*(1+v.invMargin/100);
+ const dcCurrent=(v.load/(V*invEff));
+ const acCurrent=v.load/(v.acVoltage*v.pf*( $('phase').value==='3'?Math.sqrt(3):1));
+ const production=pvInstalled*v.hsp*pvEff;
+ const rho=v.metal;
+ const pvStringCount=0;
+ let strings='Non calculées : renseignez les valeurs électriques du panneau et de l’onduleur.';
+ let stringStatus=[];
+ let series=0, parallel=0, pvCurrent=0, pvVoltage=0;
+ if(v.voc>0&&v.vmp>0&&v.isc>0&&v.imp>0&&v.maxPV>0&&v.mpptMin>0&&v.mpptMax>0&&v.mpptCount>0&&v.mpptCurrent>0){
+   const vocCold=v.voc*(1+(Math.abs(v.vocCoeff)/100)*Math.max(0,25-v.minTemp));
+   const maxSeries=Math.floor(v.maxPV/vocCold);
+   const minSeries=Math.ceil(v.mpptMin/v.vmp);
+   const maxSeriesMppt=Math.floor(v.mpptMax/v.vmp);
+   const upperSeries=Math.min(maxSeries,maxSeriesMppt,nPanels);
+   // Priorité à une répartition exacte de tous les modules en chaînes identiques.
+   for(let s=upperSeries;s>=minSeries;s--){if(nPanels%s===0){series=s;break;}}
+   if(!series){
+     // À défaut de division exacte, choisir le nombre de modules en série qui minimise le surplus.
+     for(let s=upperSeries;s>=minSeries;s--){if(s>0){series=s;break;}}
+   }
+   if(series<minSeries || upperSeries<minSeries) stringStatus.push('Aucune chaîne série valide : vérifier la plage MPPT et la tension PV maximale.');
+   else{
+     parallel=Math.ceil(nPanels/series);
+     pvVoltage=series*v.vmp;
+     pvCurrent=parallel*v.imp;
+     strings=series+' modules en série × '+parallel+' chaîne(s) parallèle(s) = '+(series*parallel)+' modules proposés.';
+     if(series*parallel!==nPanels)stringStatus.push('La répartition nécessite '+(series*parallel-nPanels)+' module(s) supplémentaire(s) ou une autre configuration.');
+     if(pvVoltage<v.mpptMin||pvVoltage>v.mpptMax)stringStatus.push('Tension de fonctionnement hors plage MPPT.');
+     if(series*vocCold>v.maxPV)stringStatus.push('Tension à froid supérieure à la tension PV maximale.');
+     const stringsPerMppt=Math.ceil(parallel/Math.max(1,v.mpptCount));
 
-const E=val("energy");
-const L=val("load");
-const D=val("days");
-const H=val("hsp");
-const P=val("panel");
-const V=val("voltage");
-const DoD=val("dod");
-const Eff=val("eff")/100;
-const InvEff=val("invEff")/100;
-const PF=val("pf");
-const Margin=val("margin")/100;
-
-const values=[E,L,D,H,P,V,DoD,Eff,InvEff,PF,Margin];
-
-if(!values.every(Number.isFinite) ||
-E<=0 || L<=0 || D<0 || H<=0 || P<=0 ||
-Eff<=0 || Eff>1 || InvEff<=0 || InvEff>1 ||
-DoD<=0 || DoD>1 || PF<=0 || PF>1 ||
-Margin<0){
-alert("Erreur : vérifiez toutes les valeurs saisies.");
-return;
+     const currentPerMppt=stringsPerMppt*v.imp;
+     if(currentPerMppt>v.mpptCurrent)stringStatus.push('Courant estimé par MPPT supérieur à la limite saisie. Répartir les chaînes ou choisir un autre onduleur.');
+     if(!stringStatus.length)stringStatus.push('Contrôles indicatifs réussis avec les valeurs saisies. Vérifier encore les limites Isc et les prescriptions fabricant.');
+   }
+ }
+ const pvCable=cableSection(pvCurrent||v.imp, v.pvLength, (pvVoltage||v.vmp), v.pvDrop, rho,1);
+ const batCable=cableSection(dcCurrent,v.batLength,V,v.batDrop,rho,1);
+ const acCable=cableSection(acCurrent,v.acLength,v.acVoltage,v.acDrop,rho,$('phase').value==='3'?3:1);
+ setText('rPvReq',fmt(pvRequired)+' kWc');
+ setText('rPv',fmt(pvInstalled)+' kWc');
+ setText('rPanels',nPanels+' panneaux');
+ setText('rBatKwh',fmt(batteryKwh)+' kWh');
+ setText('rBatAh',fmt(batteryAh,0)+' Ah / '+V+' V');
+ setText('rInv',fmt(inverterKva)+' kVA');
+ setText('rDc',fmt(dcCurrent,1)+' A');
+ setText('rAc',fmt(acCurrent,1)+' A');
+ setText('rProd',fmt(production)+' kWh/j');
+ setText('rStrings',series?strings:'À vérifier');
+ const cableText=x=>!x?'Non calculé':x.chosen?fmt(x.chosen,1)+' mm² (calcul chute: '+fmt(x.raw,2)+' mm²)':'Calcul > 240 mm² : étude spécifique requise';
+ setText('rPvCable',cableText(pvCable));
+ setText('rBatCable',cableText(batCable));
+ setText('rAcCable',cableText(acCable));
+ $('stringDetails').textContent='Configuration proposée : '+strings+'\n'+stringStatus.join('\n')+'\nVoc corrigée à froid estimée : '+(v.voc>0?fmt(v.voc*(1+(Math.abs(v.vocCoeff)/100)*Math.max(0,25-v.minTemp)))+' V':'non renseignée')+'\nTension MPP chaîne estimée : '+(pvVoltage?fmt(pvVoltage)+' V':'non calculée')+'\nCourant total de chaînes estimé : '+(pvCurrent?fmt(pvCurrent)+' A':'non calculé');
+ $('diagram').textContent='CHAMP PV ('+nPanels+' modules / '+fmt(pvInstalled)+' kWc)\n        ↓\nCoffret DC : sectionnement + protections + parafoudre (à définir)\n        ↓\nONDULEUR HYBRIDE : '+fmt(inverterKva)+' kVA indicatifs\n        ↕\nBATTERIE : '+fmt(batteryKwh)+' kWh nominaux / '+V+' V\n        ↓\nProtections AC + parafoudre + mise à la terre\n        ↓\nTABLEAU DE DISTRIBUTION → CHARGES';
+ const alerts=[];
+ if(v.load < v.energy*1000/24)alerts.push('Incohérence à vérifier : la puissance maximale saisie est inférieure à la puissance moyenne équivalente sur 24 h. Vérifiez les charges et les horaires.');
+ if(production<v.energy)alerts.push('Production solaire estimée inférieure à la consommation journalière.');
+ if(dcCurrent>200)alerts.push('Courant batterie élevé : prévoir une architecture adaptée, plusieurs batteries en parallèle ou une tension DC supérieure si les équipements le permettent.');
+ if(inverterKva>20)alerts.push('Puissance onduleur importante : étudier les démarrages moteurs, le triphasé et le fonctionnement en parallèle.');
+ if(v.days===0)alerts.push('Autonomie réglée à zéro : aucune capacité de stockage d’autonomie n’est calculée.');
+ if(stringStatus.some(s=>s.includes('supérieure')||s.includes('hors plage')||s.includes('Aucune')||s.includes('supérieur')))alerts.push('Alerte de compatibilité PV : la configuration des chaînes n’est pas validée.');
+ if(!alerts.length)alerts.push('Aucune alerte arithmétique majeure détectée. Cela ne constitue pas une validation réglementaire ou fabricant.');
+ $('resultAlerts').innerHTML=alerts.map(a=>'<div class="notice">'+a+'</div>').join('')+'<div class="notice ok"><b>Note professionnelle :</b> pré-dimensionnement. Les sections et protections doivent être confirmées selon l’intensité admissible, le mode de pose, la température, les longueurs, les courants de court-circuit, les normes locales et les notices fabricants.</div>';
+ $('reportSummary').textContent='Projet : '+$('project').value+' — Site : '+$('site').value+' — Étude : '+$('studyDate').value+'\nConsommation : '+fmt(v.energy)+' kWh/j ; puissance de pointe : '+fmt(v.load,0)+' W ; autonomie : '+fmt(v.days)+' jour(s). Champ PV : '+nPanels+' × '+fmt(v.panel,0)+' Wc = '+fmt(pvInstalled)+' kWc. Stockage nominal calculé : '+fmt(batteryKwh)+' kWh à '+V+' V. Onduleur indicatif : '+fmt(inverterKva)+' kVA.';
+ $('resultats').classList.remove('hidden');
+ $('resultats').scrollIntoView({behavior:'smooth',block:'start'});
+ window.lastSizing={nPanels,pvInstalled,batteryKwh,inverterKva,energy:v.energy,load:v.load,panelW:v.panel,hsp:v.hsp,voltage:V,dcCurrent,acCurrent,production,pvRequired,days:v.days,pvEff:v.pvEff,invEff:v.invEff,dod:num('dod'),series,parallel,pvVoltage,pvCurrent};
 }
 
-// 1. Dimensionnement photovoltaïque
-const pvRequired=E/(H*Eff);
-const panels=Math.ceil(pvRequired*1000/P);
-const pvInstalled=panels*P;
-
-// 2. Dimensionnement batterie
-const batteryKwh=(E*D)/DoD;
-const batteryAh=(batteryKwh*1000)/V;
-
-// 3. Dimensionnement onduleur
-const inverterKva=(L/(PF*1000))*(1+Margin);
-
-// 4. Courant DC côté batterie
-const dcCurrent=L/(V*InvEff);
-
-// 5. Courant AC monophasé indicatif
-const acCurrent=(L/PF)/230;
-
-// 6. Production solaire journalière théorique
-const production=(pvInstalled/1000)*H*Eff;
-
-// Affichage
-document.getElementById("pv").textContent=
-(pvInstalled/1000).toFixed(2)+" kWc";
-
-document.getElementById("np").textContent=
-panels+" panneaux";
-
-document.getElementById("bk").textContent=
-batteryKwh.toFixed(2)+" kWh";
-
-document.getElementById("ba").textContent=
-Math.ceil(batteryAh)+" Ah / "+V+" V";
-
-document.getElementById("iv").textContent=
-inverterKva.toFixed(2)+" kVA";
-
-document.getElementById("dc").textContent=
-dcCurrent.toFixed(1)+" A";
-
-document.getElementById("ac").textContent=
-acCurrent.toFixed(1)+" A";
-
-document.getElementById("prod").textContent=
-production.toFixed(2)+" kWh/j";
-
-let messages=[];
-
-const averagePower=E*1000/24;
-
-if(L<averagePower){
-messages.push("⚠️ INCOHÉRENCE : la puissance maximale saisie est inférieure à la puissance moyenne nécessaire sur 24 heures. Vérifiez la puissance des charges et la consommation quotidienne.");
+let loadRowCount=0, quoteRowCount=0, lastBalance=null;
+function addLoadRow(name='',qty=1,watts=100,sim=100,hours=1){
+ const id=++loadRowCount, tr=document.createElement('tr'); tr.dataset.id=id;
+ tr.innerHTML=`<td><input class="item-name" value="${name}" placeholder="Ex. Lampes LED"></td><td><input type="number" min="0" step="any" value="${qty}"></td><td><input type="number" min="0" step="any" value="${watts}"></td><td><input type="number" min="0" max="100" step="any" value="${sim}"></td><td><input type="number" min="0" step="any" value="${hours}"></td><td class="installed">—</td><td class="demand">—</td><td class="daily">—</td><td class="no-print"><button class="secondary" onclick="this.closest('tr').remove()">Supprimer</button></td>`;
+ $('loadRows').appendChild(tr);
+}
+function calculatePowerBalance(){
+ let installed=0,demand=0,energy=0,valid=true;
+ [...$('loadRows').rows].forEach(tr=>{
+  const inputs=tr.querySelectorAll('input'),q=Number(inputs[1].value),w=Number(inputs[2].value),s=Number(inputs[3].value)/100,h=Number(inputs[4].value);
+  if([q,w,s,h].some(x=>!Number.isFinite(x)||x<0)){valid=false;return}
+  const pi=q*w,pd=pi*s,ej=pd*h; installed+=pi;demand+=pd;energy+=ej;
+  tr.querySelector('.installed').textContent=fmt(pi,0)+' W';
+  tr.querySelector('.demand').textContent=fmt(pd,0)+' W';
+  tr.querySelector('.daily').textContent=fmt(ej/1000)+' kWh';
+ });
+ if(!valid){$('balanceNote').textContent='Vérifiez les quantités, puissances, simultanéités et durées : elles doivent être positives.';return}
+ lastBalance={installed,demand,energy:energy/1000};
+ setText('balInstalled',fmt(installed,0)+' W ('+fmt(installed/1000)+' kW)');
+ setText('balDemand',fmt(demand,0)+' W ('+fmt(demand/1000)+' kW)');
+ setText('balEnergy',fmt(energy/1000)+' kWh/j');
+ setText('balMonth',fmt(energy/1000*30)+' kWh/mois');
+ $('balanceNote').textContent='Bilan calculé. La puissance appelée est une estimation fondée sur les coefficients de simultanéité saisis ; confirmer les démarrages moteurs et les usages réels.';
+}
+function applyPowerBalance(){
+ if(!lastBalance){calculatePowerBalance()}
+ if(!lastBalance)return;
+ $('energy').value=lastBalance.energy.toFixed(2);
+ $('load').value=Math.ceil(lastBalance.demand);
+ $('balanceNote').textContent='Bilan repris dans les champs du dimensionnement. Relancez maintenant le calcul photovoltaïque.';
+ $('projet').scrollIntoView({behavior:'smooth'});
 }
 
-if(inverterKva>20){
-messages.push("⚠️ Puissance d'onduleur importante : prévoir une étude de fonctionnement, de parallélisme et de démarrage des charges.");
+const MARKET_PRICES = {
+ panel580:68000, panel550:56800, inverter5:400000, inverter8:600000,
+ battery10:612000, battery175:1240000, batteryGel200:96000,
+
+ breakerDC:10000, spdDC:14800, fuseDC:3600, cable6:800,
+ cable35:3600, ats63:36000, structure:14400, install:120000,
+ earthing:60000, mc4pair:2000, acBox:36000
+};
+let activeMarketPrices={...MARKET_PRICES};
+const MARKET_ITEMS=[
+ ['panel580','Panneau solaire bifacial 580 Wc', 'U','Repère moyen indicatif ; la mercuriale Bamako 2026 donne 73 333 FCFA.'],
+ ['panel550','Panneau solaire 550 Wc', 'U','Repère local publié autour de 70 000 FCFA.'],
+ ['inverter5','Onduleur hybride 5 kVA / 48 V', 'U','Estimation budgétaire : forte variation selon marque et MPPT.'],
+ ['inverter8','Onduleur hybride 8 kVA / 48 V', 'U','Estimation budgétaire ; demander une cotation selon marque/référence.'],
+ ['battery10','Batterie lithium LiFePO4 10 kWh / 48 V', 'U','Repères publics locaux autour de 675 000 à 800 000 FCFA.'],
+ ['battery175','Batterie lithium 17,5 kWh / 48 V', 'U','Prix public local repéré : environ 1 550 000 FCFA.'],
+ ['batteryGel200','Batterie GEL 200 Ah / 12 V', 'U','Repère public local : environ 120 000 FCFA.'],
+ ['breakerDC','Disjoncteur DC 2P', 'U','Repère de boutique locale ; calibre à déterminer par étude.'],
+ ['spdDC','Parafoudre DC', 'U','Repère de boutique locale ; tension et type à confirmer.'],
+ ['fuseDC','Fusible photovoltaïque DC', 'U','Repère de boutique locale ; calibre à dimensionner.'],
+ ['cable6','Câble solaire cuivre 6 mm²', 'm','Estimation de budget à confirmer selon marque et bobine.'],
+ ['cable35','Câble cuivre souple 35 mm²', 'm','Estimation de budget à confirmer selon qualité.'],
+ ['ats63','Inverseur de source / ATS 63 A', 'U','Estimation de budget ; nombre de pôles et pouvoir de coupure à préciser.'],
+ ['structure','Structure de fixation panneau', 'U','Provision moyenne par module ; dépend toiture/sol et acier/alu.'],
+ ['install','Installation et mise en service', 'Forfait','Provision indicative, selon puissance et complexité.'],
+ ['earthing','Kit de mise à la terre', 'Lot','Provision indicative ; vérifier résistivité et normes.'],
+ ['mc4pair','Paire de connecteurs MC4', 'Paire','Provision indicative selon marque et section.'],
+ ['acBox','Coffret de protection AC', 'U','Provision indicative, composition selon architecture.']
+];
+function renderPriceCatalog(){
+ const body=$('priceCatalogRows');if(!body)return;body.innerHTML='';
+ MARKET_ITEMS.forEach(item=>{
+  const tr=document.createElement('tr');
+  tr.innerHTML=`<td>${item[1]}</td><td><input type="number" min="0" step="100" value="${activeMarketPrices[item[0]]}" data-price-key="${item[0]}" style="max-width:130px"></td><td>${item[2]}</td><td>${item[3]}</td>`;
+  body.appendChild(tr);
+ });
+ body.querySelectorAll('input[data-price-key]').forEach(inp=>inp.addEventListener('change',()=>{activeMarketPrices[inp.dataset.priceKey]=Math.max(0,Number(inp.value)||0)}));
+}
+function resetMarketPrices(){activeMarketPrices={...MARKET_PRICES};renderPriceCatalog()}
+function marketPrice(key){return Number(activeMarketPrices[key]||0)}
+function addQuoteRow(label='Fourniture / prestation',unit='U',qty=1,price=0){
+ const tr=document.createElement('tr');tr.dataset.id=++quoteRowCount;
+ tr.innerHTML=`<td><input class="item-name" value="${label.replace(/"/g,'&quot;')}"></td><td><input value="${unit}"></td><td><input type="number" min="0" step="any" value="${qty}"></td><td><input type="number" min="0" step="any" value="${price}"></td><td class="amount">—</td><td class="no-print"><button class="secondary" onclick="this.closest('tr').remove()">Supprimer</button></td>`;
+ $('quoteRows').appendChild(tr);
 }
 
-if(dcCurrent>200){
-messages.push("⚠️ Courant batterie élevé : une étude détaillée des câbles, protections, jeux de barres et connexions parallèles est indispensable.");
+function buildQuoteLines(){
+ const s=window.lastSizing;if(!s){$('quoteResult').textContent='Effectuez d’abord le dimensionnement.';return}
+ $('quoteRows').innerHTML='';quoteRowCount=0;
+ const panelKey=s.panelW>=575?'panel580':'panel550';
+ addQuoteRow('Panneau photovoltaïque '+fmt(s.panelW,0)+' Wc','U',s.nPanels,marketPrice(panelKey));
+ const invKey=s.inverterKva>6?'inverter8':'inverter5';
+ addQuoteRow('Onduleur hybride '+fmt(s.inverterKva)+' kVA','U',1,marketPrice(invKey));
+ if(s.batteryKwh>0){
+  const batKey=s.batteryKwh>=13?'battery175':'battery10';
+  addQuoteRow('Stockage lithium — capacité calculée '+fmt(s.batteryKwh)+' kWh','Lot',1,marketPrice(batKey));
+ }
+ addQuoteRow('Structure et accessoires de fixation','U',s.nPanels,marketPrice('structure'));
+ addQuoteRow('Coffret de protection AC','U',1,marketPrice('acBox'));
+ addQuoteRow('Disjoncteur / sectionneur DC (calibre à confirmer)','U',1,marketPrice('breakerDC'));
+ addQuoteRow('Parafoudre DC (type/tension à confirmer)','U',1,marketPrice('spdDC'));
+ addQuoteRow('Câble solaire 6 mm² (longueur à renseigner)','m',0,marketPrice('cable6'));
+ addQuoteRow('Câble batterie 35 mm² (section à confirmer)','m',0,marketPrice('cable35'));
+ addQuoteRow('Connecteurs MC4','Paire',Math.ceil(s.nPanels/2),marketPrice('mc4pair'));
+ addQuoteRow('Mise à la terre','Lot',1,marketPrice('earthing'));
+ addQuoteRow('Installation et mise en service','Forfait',1,marketPrice('install'));
+ $('quoteClient').value=$('clientName')?.value||'';
+ $('quoteSite').value=$('site').value;
+ $('quoteResult').textContent='Lignes et prix indicatifs de Bamako préremplis. Ajustez les quantités de câbles, accessoires et les prix après consultation des fournisseurs. Les sections et calibres restent à valider techniquement.';
+}
+function makeQuote(){
+ const rows=[...$('quoteRows').rows];if(!rows.length){$('quoteResult').textContent='Ajoutez ou préparez au moins une ligne.';return}
+ let subtotal=0,items=[];
+ rows.forEach(tr=>{
+  const a=tr.querySelectorAll('input'),label=a[0].value,unit=a[1].value,qty=Number(a[2].value),price=Number(a[3].value),amount=qty*price;
+  tr.querySelector('.amount').textContent=fmt(amount,0)+' FCFA';subtotal+=amount;items.push({label,unit,qty,price,amount});
+ });
+ const transport=Math.max(0,num('quoteTransport')),discount=Math.max(0,num('quoteDiscount')),total=Math.max(0,subtotal+transport-discount);
+ window.lastQuote={items,subtotal,transport,discount,total};
+
+ $('quoteResult').innerHTML='<h3>DEVIS ESTIMATIF — SOULPRO MALI INGÉNIERIE</h3><p><b>Client :</b> '+($('quoteClient').value||'À renseigner')+' | <b>Site :</b> '+($('quoteSite').value||$('site').value)+'</p><p><b>Validité :</b> '+num('quoteValidity')+' jours | <b>Délai :</b> '+num('quoteDelay')+' jours</p><p><b>Sous-total :</b> '+fmt(subtotal,0)+' FCFA<br><b>Transport :</b> '+fmt(transport,0)+' FCFA<br><b>Remise :</b> '+fmt(discount,0)+' FCFA</p><h2 style="color:#7a4b00">TOTAL GÉNÉRAL : '+fmt(total,0)+' FCFA</h2><small>Prix à confirmer selon les marques, références, disponibilité, transport, taxes éventuelles et visite technique. Ce devis reste estimatif avant validation et signature.</small>';
+}
+function printQuote(){if(!window.lastQuote)makeQuote();window.print()}
+function printReport(){if(!$('detailedReport').dataset.generated)generateDetailedReport();window.print()}
+function generateDetailedReport(){
+ const s=window.lastSizing;if(!s){$('detailedReport').textContent='Effectuez d’abord le dimensionnement puis générez le rapport.';return}
+ const b=lastBalance;
+ const project=$('project').value,site=$('site').value,date=$('studyDate').value,engineer=$('engineer').value||'Non renseigné';
+ const balanceHtml=b?`<h3>1. Bilan de puissance</h3><table><tr><th>Indicateur</th><th>Résultat</th></tr><tr><td>Puissance totale installée</td><td>${fmt(b.installed,0)} W</td></tr><tr><td>Puissance appelée estimée</td><td>${fmt(b.demand,0)} W</td></tr><tr><td>Énergie journalière calculée</td><td>${fmt(b.energy)} kWh/j</td></tr><tr><td>Énergie mensuelle estimée</td><td>${fmt(b.energy*30)} kWh/mois</td></tr></table>`:`<h3>1. Bilan de puissance</h3><p>Non renseigné sous forme de liste de récepteurs. Le dimensionnement utilise la puissance maximale simultanée de ${fmt(s.load,0)} W et la consommation de ${fmt(s.energy)} kWh/j saisies dans la fiche projet.</p>`;
+ const rows=[['Énergie journalière de calcul',fmt(s.energy)+' kWh/j'],['Puissance maximale retenue',fmt(s.load,0)+' W'],['Puissance PV requise estimée',fmt(s.pvRequired)+' kWc'],['Puissance PV installée proposée',fmt(s.pvInstalled)+' kWc'],['Nombre de modules',s.nPanels+' modules de '+fmt(s.panelW,0)+' Wc'],['Production solaire estimée',fmt(s.production)+' kWh/j'],['Capacité batterie nominale calculée',fmt(s.batteryKwh)+' kWh'],['Tension du parc batterie',s.voltage+' V'],['Courant DC batterie en pointe',fmt(s.dcCurrent,1)+' A'],['Puissance apparente onduleur indicative',fmt(s.inverterKva)+' kVA'],['Configuration PV indicative',s.series+' en série × '+s.parallel+' parallèle(s)']];
+ const resultRows=rows.map(x=>`<tr><td>${x[0]}</td><td>${x[1]}</td></tr>`).join('');
+ $('detailedReport').innerHTML=`<div style="text-align:center;border-bottom:2px solid #b7791f;padding-bottom:10px"><h2 style="color:#7a4b00">SOULPRO MALI INGÉNIERIE</h2><h3>RAPPORT DE SYNTHÈSE TECHNIQUE</h3><p>${$('reportObject').value}</p></div><p><b>Référence :</b> ${$('reportRef').value} | <b>Date :</b> ${date}</p><p><b>Projet :</b> ${project} | <b>Site :</b> ${site}</p><p><b>Client :</b> ${$('clientName').value||'Non renseigné'} | <b>Contact :</b> ${$('clientContact').value||'Non renseigné'}</p><p><b>Technicien / bureau d'études :</b> ${engineer}</p>${balanceHtml}<h3>2. Synthèse du dimensionnement photovoltaïque</h3><table><tr><th>Paramètre</th><th>Résultat</th></tr>${resultRows}</table><h3>3. Contrôle indicatif des chaînes PV</h3><p>${$('stringDetails').textContent.replace(/\\n/g,'<br>')}</p><h3>4. Pré-dimensionnement électrique</h3><table><tr><th>Élément</th><th>Résultat indicatif</th></tr><tr><td>Câble champ PV</td><td>${$('rPvCable').textContent}</td></tr><tr><td>Câble batterie</td><td>${$('rBatCable').textContent}</td></tr><tr><td>Câble AC</td><td>${$('rAcCable').textContent}</td></tr><tr><td>Courant AC calculé</td><td>${$('rAc').textContent}</td></tr></table><h3>5. Architecture fonctionnelle</h3><p>${$('diagram').textContent.replace(/\\n/g,'<br>')}</p><h3>6. Observations et recommandations</h3><ul><li>Confirmer les caractéristiques de chaque équipement avec les fiches techniques des fabricants.</li><li>Vérifier l'intensité admissible des câbles selon le mode de pose, la température ambiante, le regroupement et la longueur.</li><li>Déterminer les calibres, pouvoirs de coupure et coordination des protections à partir des courants de court-circuit et prescriptions fabricant.</li><li>Vérifier la mise à la terre, le régime de neutre, les parafoudres, les dispositifs différentiels et les conditions de raccordement réseau / groupe.</li><li>Confirmer les appels de courant au démarrage des moteurs et les profils horaires des charges.</li></ul><div style="border:1px solid #cbd5e1;padding:12px;margin-top:18px"><b>Réserve technique :</b> ce document est un rapport de pré-dimensionnement établi sur les données saisies. Il ne constitue pas un plan d'exécution ni une validation réglementaire. Une vérification sur site et une validation par un professionnel qualifié sont nécessaires avant installation.</div><p style="margin-top:30px">Établi par : ${engineer}<br>Visa / signature : __________________________</p>`;
+ $('detailedReport').dataset.generated='1';
+}
+function resetForm(){if(confirm('Réinitialiser les données saisies ?'))location.reload()}
+$('studyDate').value=new Date().toISOString().slice(0,10);
+renderPriceCatalog();
+addLoadRow('Éclairage LED',10,12,100,5);
+addLoadRow('Ventilateurs',4,75,75,8);
+addLoadRow('Réfrigérateur',1,180,100,10);
+addLoadRow('Télévision / informatique',2,100,80,6);
+addQuoteRow('Module photovoltaïque','U',0,0);
+addQuoteRow('Onduleur hybride','U',1,0);
+addQuoteRow('Batterie solaire','U',0,0);
+addQuoteRow('Coffrets et protections DC / AC','Lot',1,0);
+addQuoteRow('Câbles, connectique et mise à la terre','Lot',1,0);
+addQuoteRow('Structure, transport et installation','Lot',1,0);
+
+function drawDiagram(type){
+ const sizing=window.lastSizing;
+ if(!sizing){$('schemaStatus').textContent='Veuillez d’abord calculer le dimensionnement.';return}
+ const project=$('project').value || 'Projet photovoltaïque';
+ const n=sizing.nPanels;
+ const pv=fmt(sizing.pvInstalled)+' kWc';
+ const bat=fmt(sizing.batteryKwh)+' kWh';
+ const inv=fmt(sizing.inverterKva)+' kVA';
+ const volts=$('voltage').value+' V';
+ const series=Number(($('rStrings').textContent.match(/^(\d+)/)||[])[1]||0);
+ const parallel=Number(($('rStrings').textContent.match(/×\s*(\d+)/)||[])[1]||0);
+ const commonStyle='font-family:Arial,sans-serif;font-size:14px;fill:#e2e8f0;stroke:#94a3b8;stroke-width:2';
+ const box=(x,y,w,h,label,sub)=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="9" fill="#172033" stroke="#f59e0b" stroke-width="2"/><text x="${x+w/2}" y="${y+25}" text-anchor="middle" fill="#fbbf24" font-size="14" font-weight="bold">${label}</text><text x="${x+w/2}" y="${y+47}" text-anchor="middle" fill="#e2e8f0" font-size="11">${sub}</text>`;
+ const line=(x1,y1,x2,y2,label='')=>`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#cbd5e1" stroke-width="2.5"/><text x="${(x1+x2)/2}" y="${(y1+y2)/2-7}" text-anchor="middle" fill="#fde68a" font-size="11">${label}</text>`;
+ let svg='';
+ if(type==='single'){
+  svg=`<svg viewBox="0 0 900 590" role="img" aria-label="Schéma unifilaire photovoltaïque" style="width:100%;min-width:650px;background:#0b1324;border-radius:10px">
+  <text x="450" y="30" text-anchor="middle" fill="#fbbf24" font-size="20" font-weight="bold">SCHÉMA UNIFILAIRE — ${project.replace(/[<>&"]/g,' ')}</text>
+  ${box(35,75,160,70,'CHAMP PV',n+' modules — '+pv)}
+  ${box(260,75,175,70,'COFFRET DC','Sectionnement / fusibles / SPD')}
+  ${box(505,75,175,70,'ONDULEUR','Hybride — '+inv)}
+  ${box(505,245,175,70,'BATTERIE',bat+' — '+volts)}
+  ${box(735,75,140,70,'COFFRET AC','Disjoncteur / SPD')}
+  ${box(735,245,140,70,'CHARGES','Tableau AC')}
+  ${line(195,110,260,110,'DC')}
+  ${line(435,110,505,110,'DC')}
+  ${line(592,145,592,245,'DC batterie')}
+  ${line(680,110,735,110,'AC')}
+  ${line(805,145,805,245,'AC')}
+  <text x="35" y="390" fill="#cbd5e1" font-size="13">À compléter selon le matériel retenu :</text>
+  <text x="35" y="420" fill="#cbd5e1" font-size="12">• Calibres et pouvoirs de coupure des protections</text>
+  <text x="35" y="445" fill="#cbd5e1" font-size="12">• Sections et longueurs des conducteurs</text>
+  <text x="35" y="470" fill="#cbd5e1" font-size="12">• Parafoudres, mise à la terre et régime de neutre</text>
+  <text x="35" y="495" fill="#cbd5e1" font-size="12">• Source réseau / groupe et ATS si applicable</text>
+  <text x="35" y="555" fill="#fbbf24" font-size="11">Document de principe — ne constitue pas un plan d'exécution validé.</text>
+  </svg>`;
+  $('schemaStatus').textContent='Schéma unifilaire de principe généré. Les calibres des protections restent à déterminer.';
+ }else{
+  svg=`<svg viewBox="0 0 900 650" role="img" aria-label="Schéma de câblage photovoltaïque" style="width:100%;min-width:650px;background:#0b1324;border-radius:10px">
+  <text x="450" y="30" text-anchor="middle" fill="#fbbf24" font-size="20" font-weight="bold">SCHÉMA DE CÂBLAGE — ${project.replace(/[<>&"]/g,' ')}</text>
+  ${box(35,75,180,78,'MODULES PV',n+' modules — '+pv)}
+  ${box(280,75,190,78,'COFFRET DC','Entrées strings / SPD DC')}
+  ${box(535,75,190,78,'ONDULEUR HYBRIDE',inv+' — entrée PV')}
+  ${box(535,270,190,78,'BATTERIE',bat+' — '+volts)}
+  ${box(535,465,190,78,'SORTIE AC','Vers protections et tableau')}
+  ${line(215,114,280,114,'(+ / −) DC')}
+  ${line(470,114,535,114,'(+ / −) DC')}
+  
+  ${line(630,153,630,270,'Câbles batterie + / −')}
+  ${line(630,348,630,465,'L / N / PE ou L1-L2-L3 / N / PE')}
+  <text x="35" y="245" fill="#fbbf24" font-size="13">Câblage champ PV</text>
+  <text x="35" y="270" fill="#cbd5e1" font-size="12">Respecter polarités, connecteurs compatibles,</text>
+  <text x="35" y="292" fill="#cbd5e1" font-size="12">configuration série/parallèle et limites MPPT.</text>
+  <text x="35" y="380" fill="#fbbf24" font-size="13">Câblage batterie</text>
+  <text x="35" y="405" fill="#cbd5e1" font-size="12">Câbles de même section et longueur en parallèle,</text>
+  <text x="35" y="427" fill="#cbd5e1" font-size="12">fusible/disjoncteur DC près de la batterie,</text>
+  <text x="35" y="449" fill="#cbd5e1" font-size="12">respect des couples de serrage et du BMS.</text>
+  <text x="35" y="585" fill="#cbd5e1" font-size="12">PE = conducteur de protection. Ne jamais relier N-PE sans suivre le schéma de liaison à la terre et la notice onduleur.</text>
+  <text x="35" y="615" fill="#fbbf24" font-size="11">Document de principe — à valider sur site avant installation.</text>
+  </svg>`;
+  $('schemaStatus').textContent='Schéma de câblage de principe généré. Vérifier le brochage et les bornes exactes du fabricant.';
+ }
+ $('schemaCanvas').innerHTML=svg;
 }
 
-if(production<E){
-messages.push("⚠️ Production journalière théorique inférieure au besoin énergétique.");
-}
-
-document.getElementById("alerts").innerHTML=
-messages.map(m=>'<div class="warning">'+m+'</div>').join("");
-
-document.getElementById("results").style.display="block";
-
-document.getElementById("results").scrollIntoView({
-behavior:"smooth"
-});
-}
 </script>
 </body>
 </html>
