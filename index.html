@@ -1,100 +1,257 @@
 
 
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SOLARIUM - Logiciel solaire</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SOLARIUM - Dimensionnement professionnel</title>
 <style>
 *{box-sizing:border-box}
-body{margin:0;font-family:Arial;background:#0b1120;color:#f1f5f9}
-header{background:#123b2a;padding:24px;border-bottom:3px solid #f59e0b}
-header h1{color:#fbbf24;margin:0}
+body{margin:0;background:#0b1120;color:#f1f5f9;font-family:Arial,sans-serif}
+header{background:#123b2a;padding:24px;border-bottom:4px solid #f59e0b}
+header h1{color:#fbbf24;margin:0;font-size:30px}
+header p{margin-bottom:0}
 main{max-width:850px;margin:auto;padding:18px}
-.card{background:#172033;padding:20px;border-radius:14px;margin-bottom:18px;border:1px solid #334155}
+.card{background:#172033;border:1px solid #334155;border-radius:15px;padding:20px;margin-bottom:20px}
 h2{color:#fbbf24}
-label{display:block;margin-top:14px;color:#cbd5e1}
-input,select{width:100%;padding:13px;margin-top:7px;background:#0f172a;color:white;border:1px solid #475569;border-radius:8px;font-size:16px}
-button{width:100%;padding:15px;margin-top:20px;background:#f59e0b;color:#111827;border:0;border-radius:9px;font-size:17px;font-weight:bold}
-.results{display:none}
+label{display:block;margin-top:15px;color:#cbd5e1;font-size:14px}
+input,select{width:100%;padding:14px;margin-top:7px;background:#0f172a;color:white;border:1px solid #475569;border-radius:9px;font-size:16px}
+button{width:100%;padding:16px;margin-top:22px;background:#f59e0b;color:#111827;border:0;border-radius:10px;font-weight:bold;font-size:17px}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:12px}
-.result{background:#0f172a;padding:15px;border-left:4px solid #f59e0b;border-radius:8px}
+.result{background:#0f172a;padding:16px;border-left:4px solid #f59e0b;border-radius:9px}
 .result small{color:#94a3b8}
-.result strong{display:block;color:#fbbf24;font-size:21px;margin-top:8px}
-footer{text-align:center;color:#94a3b8;padding:20px}
+.result strong{display:block;color:#fbbf24;font-size:21px;margin-top:8px;overflow-wrap:anywhere}
+#results{display:none}
+.warning{background:#422006;color:#fde68a;padding:14px;border-radius:9px;margin-top:15px;line-height:1.5}
+.info{background:#123b2a;color:#bbf7d0;padding:14px;border-radius:9px;margin-top:15px;line-height:1.5}
+footer{text-align:center;color:#94a3b8;padding:25px}
 </style>
 </head>
 <body>
+
 <header>
 <h1>☀️ SOLARIUM</h1>
-<p>Logiciel de dimensionnement photovoltaïque</p>
+<p>Logiciel professionnel de dimensionnement photovoltaïque</p>
 </header>
+
 <main>
+
 <section class="card">
-<h2>📋 Données du projet</h2>
+<h2>📋 1. Données énergétiques</h2>
+
 <label>Consommation quotidienne (kWh/jour)</label>
-<input id="energy" type="number" value="10" min="0.1">
+<input id="energy" type="text" inputmode="decimal" value="10">
+
 <label>Puissance maximale des charges (W)</label>
-<input id="load" type="number" value="3000" min="1">
-<label>Autonomie (jours)</label>
-<input id="days" type="number" value="1" min="0">
+<input id="load" type="text" inputmode="decimal" value="3000">
+
+<label>Autonomie souhaitée (jours)</label>
+<input id="days" type="text" inputmode="decimal" value="1">
+
 <label>Heures solaires équivalentes (HSP)</label>
-<input id="hsp" type="number" value="5.5" min="0.1">
-<label>Puissance d'un panneau (Wc)</label>
-<input id="panel" type="number" value="580" min="1">
-<label>Tension batterie</label>
+<input id="hsp" type="text" inputmode="decimal" value="5.5">
+
+<label>Puissance d'un panneau solaire (Wc)</label>
+<input id="panel" type="text" inputmode="decimal" value="580">
+
+<h2>🔋 2. Stockage</h2>
+
+<label>Tension du système batterie</label>
 <select id="voltage">
 <option value="12">12 V</option>
 <option value="24">24 V</option>
 <option value="48" selected>48 V</option>
 </select>
-<label>Technologie de batterie</label>
+
+<label>Technologie batterie</label>
 <select id="dod">
 <option value="0.5">Gel / plomb (50%)</option>
 <option value="0.8" selected>Lithium (80%)</option>
+<option value="0.9">Lithium (90%)</option>
 </select>
-<label>Rendement global (%)</label>
-<input id="eff" type="number" value="80" min="1" max="100">
-<button onclick="calculer()">CALCULER LE DIMENSIONNEMENT</button>
+
+<h2>⚙️ 3. Paramètres de conversion</h2>
+
+<label>Rendement global photovoltaïque (%)</label>
+<input id="eff" type="text" inputmode="decimal" value="80">
+
+<label>Rendement de l'onduleur (%)</label>
+<input id="invEff" type="text" inputmode="decimal" value="92">
+
+<label>Facteur de puissance des charges (cos φ)</label>
+<input id="pf" type="text" inputmode="decimal" value="0.9">
+
+<label>Marge de sécurité de l'onduleur (%)</label>
+<input id="margin" type="text" inputmode="decimal" value="25">
+
+<button onclick="calculate()">⚡ CALCULER LE DIMENSIONNEMENT</button>
 </section>
-<section class="card results" id="results">
-<h2>📊 Résultats</h2>
+
+<section class="card" id="results">
+<h2>📊 4. Résultats du dimensionnement</h2>
+
 <div class="grid">
-<div class="result"><small>Puissance PV</small><strong id="pv"></strong></div>
-<div class="result"><small>Nombre de panneaux</small><strong id="np"></strong></div>
-<div class="result"><small>Batterie nécessaire</small><strong id="bk"></strong></div>
-<div class="result"><small>Capacité batterie</small><strong id="ba"></strong></div>
-<div class="result"><small>Onduleur indicatif</small><strong id="inv"></strong></div>
-<div class="result"><small>Courant DC indicatif</small><strong id="cur"></strong></div>
+<div class="result">
+<small>Puissance PV installée</small>
+<strong id="pv">-</strong>
 </div>
-<p>Résultats indicatifs à valider selon les fiches techniques, les températures, les pertes et les caractéristiques des équipements.</p>
+
+<div class="result">
+<small>Nombre de panneaux</small>
+<strong id="np">-</strong>
+</div>
+
+<div class="result">
+<small>Capacité nominale batterie</small>
+<strong id="bk">-</strong>
+</div>
+
+<div class="result">
+<small>Capacité batterie</small>
+<strong id="ba">-</strong>
+</div>
+
+<div class="result">
+<small>Puissance onduleur indicative</small>
+<strong id="iv">-</strong>
+</div>
+
+<div class="result">
+<small>Courant DC batterie</small>
+<strong id="dc">-</strong>
+</div>
+
+<div class="result">
+<small>Courant AC monophasé à 230 V</small>
+<strong id="ac">-</strong>
+</div>
+
+<div class="result">
+<small>Production solaire théorique</small>
+<strong id="prod">-</strong>
+</div>
+</div>
+
+<div id="alerts"></div>
+
+<div class="info">
+<strong>Note technique :</strong> ce calculateur réalise un pré-dimensionnement.
+Les sections de câbles, les protections, les tensions MPPT, les courants de court-circuit et les configurations série/parallèle doivent être vérifiés avec les fiches techniques des équipements.
+</div>
 </section>
+
 </main>
-<footer>SOLARIUM © 2026 | Ingénierie solaire</footer>
+
+<footer>
+SOLARIUM © 2026 | Ingénierie solaire
+</footer>
+
 <script>
-function calculer(){
-const e=Number(document.getElementById('energy').value);
-const l=Number(document.getElementById('load').value);
-const d=Number(document.getElementById('days').value);
-const h=Number(document.getElementById('hsp').value);
-const p=Number(document.getElementById('panel').value);
-const v=Number(document.getElementById('voltage').value);
-const dod=Number(document.getElementById('dod').value);
-const eff=Number(document.getElementById('eff').value)/100;
-if(![e,l,d,h,p,v,dod,eff].every(Number.isFinite)||e<=0||l<=0||d<0||h<=0||p<=0||eff<=0||eff>1){alert('Vérifiez les valeurs saisies.');return;}
-const n=Math.ceil(e*1000/(h*p*eff));
-const pv=n*p;
-const bk=e*d/dod;
-const ba=bk*1000/v;
-document.getElementById('pv').textContent=(pv/1000).toFixed(2)+' kWc';
-document.getElementById('np').textContent=n+' panneaux';
-document.getElementById('bk').textContent=bk.toFixed(2)+' kWh';
-document.getElementById('ba').textContent=Math.ceil(ba)+' Ah / '+v+' V';
-document.getElementById('inv').textContent=(l*1.25/1000).toFixed(2)+' kVA indicatif';
-document.getElementById('cur').textContent=(l/v).toFixed(1)+' A';
-document.getElementById('results').style.display='block';
-document.getElementById('results').scrollIntoView({behavior:'smooth'});
+function val(id){
+return Number(document.getElementById(id).value.trim().replace(",","."));
+}
+
+function calculate(){
+
+const E=val("energy");
+const L=val("load");
+const D=val("days");
+const H=val("hsp");
+const P=val("panel");
+const V=val("voltage");
+const DoD=val("dod");
+const Eff=val("eff")/100;
+const InvEff=val("invEff")/100;
+const PF=val("pf");
+const Margin=val("margin")/100;
+
+const values=[E,L,D,H,P,V,DoD,Eff,InvEff,PF,Margin];
+
+if(!values.every(Number.isFinite) ||
+E<=0 || L<=0 || D<0 || H<=0 || P<=0 ||
+Eff<=0 || Eff>1 || InvEff<=0 || InvEff>1 ||
+DoD<=0 || DoD>1 || PF<=0 || PF>1 ||
+Margin<0){
+alert("Erreur : vérifiez toutes les valeurs saisies.");
+return;
+}
+
+// 1. Dimensionnement photovoltaïque
+const pvRequired=E/(H*Eff);
+const panels=Math.ceil(pvRequired*1000/P);
+const pvInstalled=panels*P;
+
+// 2. Dimensionnement batterie
+const batteryKwh=(E*D)/DoD;
+const batteryAh=(batteryKwh*1000)/V;
+
+// 3. Dimensionnement onduleur
+const inverterKva=(L/(PF*1000))*(1+Margin);
+
+// 4. Courant DC côté batterie
+const dcCurrent=L/(V*InvEff);
+
+// 5. Courant AC monophasé indicatif
+const acCurrent=(L/PF)/230;
+
+// 6. Production solaire journalière théorique
+const production=(pvInstalled/1000)*H*Eff;
+
+// Affichage
+document.getElementById("pv").textContent=
+(pvInstalled/1000).toFixed(2)+" kWc";
+
+document.getElementById("np").textContent=
+panels+" panneaux";
+
+document.getElementById("bk").textContent=
+batteryKwh.toFixed(2)+" kWh";
+
+document.getElementById("ba").textContent=
+Math.ceil(batteryAh)+" Ah / "+V+" V";
+
+document.getElementById("iv").textContent=
+inverterKva.toFixed(2)+" kVA";
+
+document.getElementById("dc").textContent=
+dcCurrent.toFixed(1)+" A";
+
+document.getElementById("ac").textContent=
+acCurrent.toFixed(1)+" A";
+
+document.getElementById("prod").textContent=
+production.toFixed(2)+" kWh/j";
+
+let messages=[];
+
+const averagePower=E*1000/24;
+
+if(L<averagePower){
+messages.push("⚠️ INCOHÉRENCE : la puissance maximale saisie est inférieure à la puissance moyenne nécessaire sur 24 heures. Vérifiez la puissance des charges et la consommation quotidienne.");
+}
+
+if(inverterKva>20){
+messages.push("⚠️ Puissance d'onduleur importante : prévoir une étude de fonctionnement, de parallélisme et de démarrage des charges.");
+}
+
+if(dcCurrent>200){
+messages.push("⚠️ Courant batterie élevé : une étude détaillée des câbles, protections, jeux de barres et connexions parallèles est indispensable.");
+}
+
+if(production<E){
+messages.push("⚠️ Production journalière théorique inférieure au besoin énergétique.");
+}
+
+document.getElementById("alerts").innerHTML=
+messages.map(m=>'<div class="warning">'+m+'</div>').join("");
+
+document.getElementById("results").style.display="block";
+
+document.getElementById("results").scrollIntoView({
+behavior:"smooth"
+});
 }
 </script>
 </body>
